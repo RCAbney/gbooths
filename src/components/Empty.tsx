@@ -1,9 +1,9 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
+import { MouseEvent } from "../types/types";
 
 const Empty = () => {
   let navigate = useNavigate();
-  const handleClick = (e) => {
+  const handleClick = (e: MouseEvent) => {
     e.preventDefault();
     navigate("/all-booths");
   };
@@ -12,7 +12,7 @@ const Empty = () => {
       <button
         type="button"
         className="relative block w-full border-2 border-gray-300 border-dashed rounded-lg p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        onClick={handleClick}
+        onClick={(e) => handleClick(e)}
       >
         <svg
           className="mx-auto h-12 w-12 text-gray-400"
