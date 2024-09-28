@@ -3,7 +3,7 @@ import { devtools, persist } from "zustand/middleware";
 import { toast } from "react-toastify";
 import { Booth } from "../types/types";
 
-type BoothState = {
+interface BoothState {
     booths: Booth[];
     sortedBy: string;
     setAllBooths: (payload: Booth[]) => void;
@@ -41,12 +41,11 @@ const useBoothStore = create<BoothState>()(
                     }
                 },
                 setIsBoothVisited: (payload: number) => {
-                    console.log("eyeblick");
                     const booths = get().booths;
                     let updatedBooths = [...booths];
                     if (booths[payload].isVisited) {
                         updatedBooths[payload].isVisited = false;
-                        set(() => ({ booths: updatedBooths }), false, "setISVisited");
+                        set(() => ({ booths: updatedBooths }), false, "setIsVisited");
                     } else {
                         updatedBooths[payload].isVisited = true;
                         set(() => ({ booths: updatedBooths }), false, "setIsVisited");
