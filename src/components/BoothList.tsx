@@ -1,10 +1,19 @@
-import React from "react";
+import { FC } from "react";
 import { PlusIcon as PlusIconOutline } from "@heroicons/react/24/outline";
 import { MinusIcon as MinusIconOutline } from "@heroicons/react/24/outline";
 import { EyeIcon as EyeIconOutline } from "@heroicons/react/24/outline";
 import { EyeSlashIcon as EyeOffIconOutline } from "@heroicons/react/24/outline";
+import { Booth } from "../types/types";
 
-const BoothList = ({
+type BoothListProps = {
+  allBooths: Booth[];
+  allPublishers: { Publisher: string, Location: string }[];
+  handleClick: (rowKey: string) => void;
+  handleVisitedClick: (rowKey: string) => void;
+  filteredView?: boolean;
+}
+
+const BoothList: FC<BoothListProps> = ({
   allPublishers,
   allBooths,
   handleClick,

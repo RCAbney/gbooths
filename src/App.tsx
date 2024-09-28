@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import Papa from "papaparse";
 import useBoothStore from "./store/useBoothStore";
 import AllBooths from "./routes/AllBooths";
 import MyBooths from "./routes/MyBooths";
@@ -7,6 +6,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Routes, Route } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { Booth } from "./types/types";
 
 function App() {
     const allBooths = useBoothStore((state) => state.booths);
@@ -26,7 +26,7 @@ function App() {
 
     useEffect(() => {
         if (data && allBooths.length === 0) {
-            const keyed = data.map((row, index) => {
+            const keyed = data.map((row: Booth, index: number) => {
                 if (typeof row.Location === "number") {
                     row.Location = row.Location.toString();
                 }
@@ -37,7 +37,7 @@ function App() {
                         ? parseInt(row.Location.replace(/\D/g, ""))
                         : 0,
                 };
-            }).sort((a, b) => {
+            }).sort((a: Booth, b: Booth) => {
                 const pubA = a.Publisher?.toUpperCase() || "";
                 const pubB = b.Publisher?.toUpperCase() || "";
                 if (pubA < pubB) {

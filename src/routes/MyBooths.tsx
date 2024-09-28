@@ -3,6 +3,7 @@ import useBoothStore from "../store/useBoothStore";
 import Empty from "../components/Empty";
 import Layout from "../components/Layout";
 import BoothList from "../components/BoothList";
+import getAllPublishers from "../utils/getAllPublishers";
 
 const MyBooths = () => {
   const allBooths = useBoothStore((state) => state.booths);
@@ -13,20 +14,9 @@ const MyBooths = () => {
     return booth.isSelected === true;
   });
 
-  const allPublishers = [
-    ...new Set(
-      filteredBooths
-        .map((booth) =>
-          JSON.stringify({
-            Publisher: booth.Publisher,
-            Location: booth.Location,
-          })
-        )
-        .flat()
-    ),
-  ].map(JSON.parse);
+  const allPublishers = getAllPublishers(filteredBooths)
 
-  const handleClick = (key) => {
+  const handleClick = (key: string) => {
     const index = allBooths.map((e) => e.rowKey).indexOf(key);
     const title = allBooths[index].Title;
     const payload = {
@@ -35,7 +25,7 @@ const MyBooths = () => {
     };
     setIsBoothSelected(payload);
   };
-  const handleVisitedClick = (key) => {
+  const handleVisitedClick = (key: string) => {
     const index = allBooths.map((e) => e.rowKey).indexOf(key);
     setIsBoothVisited(index);
   };
