@@ -19,7 +19,7 @@ const useBoothStore = create<BoothState>()(
                 booths: [],
                 sortedBy: "Publisher",
                 setAllBooths: (payload: Booth[]) =>
-                    set(() => ({ booths: payload }), false, "setAllBooths"),
+                    set(() => ({ booths: payload })),
                 setIsBoothSelected: (payload: {
                     title: string;
                     index: number;
@@ -28,13 +28,13 @@ const useBoothStore = create<BoothState>()(
                     let updatedBooths = [...booths];
                     if (booths[payload.index].isSelected) {
                         updatedBooths[payload.index].isSelected = false;
-                        set(() => ({ booths: updatedBooths }), false, "setIsSelected");
+                        set(() => ({ booths: updatedBooths }));
                         toast.success(
                             `${payload.title} was removed from your booths.`
                         );
                     } else {
                         updatedBooths[payload.index].isSelected = true;
-                        set(() => ({ booths: updatedBooths }), false, "setIsSelected");
+                        set(() => ({ booths: updatedBooths }));
                         toast.success(
                             `${payload.title} was added to your booths.`
                         );
@@ -45,10 +45,10 @@ const useBoothStore = create<BoothState>()(
                     let updatedBooths = [...booths];
                     if (booths[payload].isVisited) {
                         updatedBooths[payload].isVisited = false;
-                        set(() => ({ booths: updatedBooths }), false, "setIsVisited");
+                        set(() => ({ booths: updatedBooths }));
                     } else {
                         updatedBooths[payload].isVisited = true;
-                        set(() => ({ booths: updatedBooths }), false, "setIsVisited");
+                        set(() => ({ booths: updatedBooths }));
                     }
                 },
                 setSortedBy: () => {
@@ -72,7 +72,7 @@ const useBoothStore = create<BoothState>()(
                                 booths: newSort,
                                 sortedBy: "Publisher",
                             };
-                        }, false, "setSorted");
+                        });
                     } else if (sortedBy === "Publisher") {
                         newSort.sort((a, b) => {
                             const locA = a.rowLocationNum;
@@ -91,7 +91,7 @@ const useBoothStore = create<BoothState>()(
                                 booths: newSort,
                                 sortedBy: "Location",
                             };
-                        }, false, "setSorted");
+                        });
                     }
                 },
             }),
