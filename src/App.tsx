@@ -1,67 +1,71 @@
-import React, { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import useBoothStore from "./store/useBoothStore";
 import AllBooths from "./routes/AllBooths";
 import MyBooths from "./routes/MyBooths";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { Routes, Route } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import LoadingState from "./components/LoadingState";
+import ErrorState from "./components/ErrorState";
 import { Booth } from "./types/types";
+import "react-toastify/dist/ReactToastify.css";
 
-function App() {
-    const allBooths = useBoothStore((state) => state.booths);
+const App = () => {
     const setAllBooths = useBoothStore((state) => state.setAllBooths);
 
-    const fetchAllBooths = async () => {
-        const res = await fetch("/data/gencon-2024.json");
-        return res.json();
-    };
-
-    const getBoothsQuery = useQuery({
-        queryKey: ["allBooths"],
-        queryFn: fetchAllBooths,
-    });
-
-    const { data, isError, isLoading } = getBoothsQuery;
-
-    useEffect(() => {
-        if (data && allBooths.length === 0) {
-            const keyed = data.map((row: Booth, index: number) => {
-                if (typeof row.Location === "number") {
-                    row.Location = row.Location.toString();
-                }
-                return {
-                    ...row,
-                    rowKey: `${row.BGGId ? row.BGGId : "NoBGGId"}-${index}`,
-                    rowLocationNum: row.Location
-                        ? parseInt(row.Location.replace(/\D/g, ""))
-                        : 0,
-                };
-            }).sort((a: Booth, b: Booth) => {
+    const { isLoading, isError, error } = useQuery({
+        queryKey: ["booths"],
+        queryFn: async (): Promise<Booth[]> => {
+            const res = await fetch("/data/gencon-2024.json");
+            if (!res.ok) {
+                throw new Error('Failed to fetch booths');
+            }
+            const data: Booth[] = await res.json();
+            
+            const processedBooths = data.map((row, index) => ({
+                ...row,
+                Location: typeof row.Location === "number" 
+                    ? row.Location.toString() 
+                    : row.Location,
+                rowKey: `${row.BGGId ? row.BGGId : "NoBGGId"}-${index}`,
+                rowLocationNum: typeof row.Location === "string"
+                    ? parseInt(row.Location.replace(/\D/g, ""))
+                    : row.Location || 0,
+            })).sort((a, b) => {
                 const pubA = a.Publisher?.toUpperCase() || "";
                 const pubB = b.Publisher?.toUpperCase() || "";
-                if (pubA < pubB) {
-                    return -1;
-                }
-                if (pubA > pubB) {
-                    return 1;
-                }
-                return 0;
+                return pubA.localeCompare(pubB);
             });
-            setAllBooths(keyed);
-        }
-    }, [allBooths.length, data]);
+            
+            setAllBooths(processedBooths);
+            return processedBooths;
+        },
+        // Prevent refetching on window focus since data is unlikely to change
+        refetchOnWindowFocus: false,
+        // Cache the data for 1 hour
+        staleTime: 1000 * 60 * 60,
+    });
+
+    if (isLoading) {
+        return <LoadingState />;
+    }
+
+    if (isError) {
+        return (
+            <ErrorState 
+                message={error instanceof Error ? error.message : 'An error occurred'} 
+            />
+        );
+    }
 
     return (
-        <div className="app">
-            <ToastContainer autoClose={750} position="top-center" />
+        <>
             <Routes>
+                <Route path="/" element={<AllBooths />} />
                 <Route path="/my-booths" element={<MyBooths />} />
-                <Route path="/all-booths" element={<AllBooths />} />
-                <Route path="/" element={<MyBooths />} />
             </Routes>
-        </div>
+            <ToastContainer position="top-center" autoClose={750} />
+        </>
     );
-}
+};
 
 export default App;

@@ -10,7 +10,7 @@ interface BoothState {
     setIsBoothSelected: (payload: { title: string; index: number }) => void;
     setIsBoothVisited: (payload: number) => void;
     setSortedBy: () => void;
-};
+}
 
 const useBoothStore = create<BoothState>()(
     devtools(
@@ -25,7 +25,7 @@ const useBoothStore = create<BoothState>()(
                     index: number;
                 }) => {
                     const booths = get().booths;
-                    let updatedBooths = [...booths];
+                    const updatedBooths = [...booths];
                     if (booths[payload.index].isSelected) {
                         updatedBooths[payload.index].isSelected = false;
                         set(() => ({ booths: updatedBooths }));
@@ -42,7 +42,7 @@ const useBoothStore = create<BoothState>()(
                 },
                 setIsBoothVisited: (payload: number) => {
                     const booths = get().booths;
-                    let updatedBooths = [...booths];
+                    const updatedBooths = [...booths];
                     if (booths[payload].isVisited) {
                         updatedBooths[payload].isVisited = false;
                         set(() => ({ booths: updatedBooths }));
@@ -54,7 +54,7 @@ const useBoothStore = create<BoothState>()(
                 setSortedBy: () => {
                     const sortedBy = get().sortedBy;
                     const booths = get().booths;
-                    let newSort = [...booths];
+                    const newSort = [...booths];
                     if (sortedBy === "Location") {
                         newSort.sort((a: Booth, b: Booth) => {
                             const pubA = a.Publisher?.toUpperCase() || "";

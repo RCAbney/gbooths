@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { MouseEvent } from "../types/types";
 
 const Empty = () => {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const handleClick = (e: MouseEvent) => {
     e.preventDefault();
     navigate("/all-booths");
@@ -33,7 +33,7 @@ const Empty = () => {
         </svg>
 
         <p className="mt-2 block text-med font-medium text-gray-900 px-7">
-          It doesn't look like you've added any booths to visit yet.
+          It doesn&rsquo;t look like you&rsquo;ve added any booths to visit yet.
         </p>
         <p className="mt-4 block text-sm font-medium text-gray-900 px-7">
           Tap here or on View All in the menu to see all listed GenCon booths.
